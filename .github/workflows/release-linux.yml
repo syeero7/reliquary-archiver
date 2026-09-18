@@ -11,18 +11,18 @@ jobs:
     permissions:
       contents: read
 
-  steps:
-    - uses: actions/checkout@v6
+    steps:
+      - uses: actions/checkout@v6
 
-    - name: Install deps
-      run: |
-        sudo apt-get update 
-        sudo apt install -y libpcap-dev libwayland-dev
+      - name: Install deps
+        run: |
+          sudo apt-get update 
+          sudo apt install -y libpcap-dev libwayland-dev
 
-    - name: Build
-      run: cargo build --release --target x86_64-unknown-linux-gnu
+      - name: Build
+        run: cargo build --release --target x86_64-unknown-linux-gnu
 
-    - uses: actions/upload-artifact@v7
-      with:
-        name: reliquary-archiver-linux-pcap-x64
-        path: target/release/reliquary-archiver
+      - uses: actions/upload-artifact@v7
+        with:
+          name: reliquary-archiver-linux-pcap-x64
+          path: target/release/reliquary-archiver

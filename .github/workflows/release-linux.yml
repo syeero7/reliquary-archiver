@@ -20,7 +20,7 @@ jobs:
           sudo apt install -y libpcap-dev libwayland-dev
 
       - name: Build
-        run: cargo build --release --target x86_64-unknown-linux-gnu
+        run: cargo build --release
 
       - run: ls -lah target/
       - run: ls -lah target/release/

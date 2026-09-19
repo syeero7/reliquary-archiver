@@ -22,9 +22,6 @@ jobs:
       - name: Build
         run: cargo build --release
 
-      - run: ls -lah target/
-      - run: ls -lah target/release/
-
       - uses: actions/upload-artifact@v7
         with:
           name: reliquary-archiver-linux-pcap-x64

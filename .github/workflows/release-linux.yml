@@ -22,29 +22,44 @@ jobs:
       - name: Build
         run: cargo build --release
 
-      - name: Create AppDir and sub directories
-        run: mkdir -p AppDir/usr/bin AppDir/usr/lib
-
-      - name: Create AppRun script
+      - name: Create directories
         run: |
-          echo -e '#!/bin/sh
+          mkdir -p AppDir/usr/bin \
+          AppDir/usr/lib \
+          AppDir/usr/share/icons/hicolor/256x256/apps \
+          AppDir/usr/share/applications \
+
+      - name: Create AppRun script and desktop file
+        run: |
+          echo '#!/bin/sh
           HERE="$(dirname "$(readlink -f "$0")")"
           APPIMAGE_LIB_DIRS="$HERE/usr/lib:$HERE/usr/lib/x86_64-linux-gnu"
           export LD_LIBRARY_PATH="$APPIMAGE_LIB_DIRS:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib"
           exec "$HERE/usr/bin/reliquary-archiver" "$@"' > AppDir/AppRun 
           chmod +x AppDir/AppRun
 
-      - name: copy reliquary binary and libpcap
+          echo '[Desktop Entry]
+                Type=Application
+                Name=reliquary-archiver
+                Exec=reliquary-archiver
+                Icon=reliquary-archiver
+                Categories=Utility;
+                Terminal=true' > AppDir/usr/share/applications/reliquary-archiver.desktop
+
+      - name: copy files
         run: |
           cp target/release/reliquary-archiver AppDir/usr/bin/ 
           chmod +x AppDir/usr/bin/reliquary-archiver
           LIBPCAP_PATH=$(ldconfig -p | grep "libpcap.so" | awk '{print $NF}' | head -n 1)
           cp "$LIBPCAP_PATH" AppDir/usr/lib/
+          cp assets/icon256.png AppDir/usr/share/icons/hicolor/256x256/apps/reliquary-archiver.png
+          ln -s AppDir/usr/share/icons/hicolor/256x256/apps/reliquary-archiver.png AppDir/reliquary-archiver.png
+          ln -s AppDir/usr/share/applications/reliquary-archiver.desktop AppDir/reliquary-archiver.desktop
 
       - name: check files
         run: |
           ls -lah AppDir/ AppDir/usr/ AppDir/usr/bin/ AppDir/usr/lib/
-          echo AppDir/AppRun
+          cat AppDir/AppRun
 
       - name: Download appimagetool
         run: |

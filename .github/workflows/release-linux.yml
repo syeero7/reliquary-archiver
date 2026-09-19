@@ -22,7 +22,33 @@ jobs:
       - name: Build
         run: cargo build --release
 
+      - name: Pack AppImage
+        run: mkdir -p AppDir/usr/bin AppDir/usr/lib
+        run: |
+          echo -e '#!/bin/sh
+          HERE="$(dirname "$(readlink -f "$0")")"
+          APPIMAGE_LIB_DIRS="$HERE/usr/lib:$HERE/usr/lib/x86_64-linux-gnu"
+          export LD_LIBRARY_PATH="$APPIMAGE_LIB_DIRS:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib"
+          exec "$HERE/usr/bin/reliquary-archiver" "$@"' > AppDir/AppRun 
+          chmod +x AppDir/AppRun
+
+        run: |
+          cp target/release/reliquary-archiver AppDir/usr/bin/ 
+          chmod +x AppDir/usr/bin/reliquary-archiver
+
+        run: |
+          LIBPCAP_PATH=$(ldconfig -p | grep "libpcap.so" | awk '{print $NF}' | head -n 1)
+          cp "$LIBPCAP_PATH" AppDir/usr/lib/
+
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
+          chmod +x appimagetool
+
+        run: |
+          ./appimagetool --appimage-extract
+          ./squashfs-root/AppRun AppDir reliquary.AppImage
+
       - uses: actions/upload-artifact@v7
         with:
-          name: reliquary-archiver-linux-pcap-x64
-          path: target/release/reliquary-archiver
+          name: reliquary-archiver-x86_64.AppImage
+          path: reliquary.AppImage

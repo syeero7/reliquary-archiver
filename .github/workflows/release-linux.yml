@@ -38,7 +38,7 @@ jobs:
           exec "$HERE/usr/bin/reliquary-archiver" "$@"' > AppDir/AppRun 
           chmod +x AppDir/AppRun
 
-          echo -e '[Desktop Entry]\nType=Application\nName=reliquary-archiver\nExec=reliquary-archiver\nIcon=reliquary-archiver\Categories=Utility;\nTerminal=true' > AppDir/usr/share/applications/reliquary-archiver.desktop
+          echo -e '[Desktop Entry]\nType=Application\nName=reliquary-archiver\nExec=reliquary-archiver\nIcon=reliquary-archiver\nCategories=Utility;\nTerminal=true' > AppDir/usr/share/applications/reliquary-archiver.desktop
           chmod +x AppDir/usr/share/applications/reliquary-archiver.desktop
 
       - name: copy files

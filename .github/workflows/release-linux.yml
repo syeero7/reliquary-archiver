@@ -38,13 +38,8 @@ jobs:
           exec "$HERE/usr/bin/reliquary-archiver" "$@"' > AppDir/AppRun 
           chmod +x AppDir/AppRun
 
-          echo '[Desktop Entry]
-                Type=Application
-                Name=reliquary-archiver
-                Exec=reliquary-archiver
-                Icon=reliquary-archiver
-                Categories=Utility;
-                Terminal=true' > AppDir/usr/share/applications/reliquary-archiver.desktop
+          echo -e '[Desktop Entry]\nType=Application\nName=reliquary-archiver\nExec=reliquary-archiver\nIcon=reliquary-archiver\Categories=Utility;\nTerminal=true' > AppDir/usr/share/applications/reliquary-archiver.desktop
+          chmod +x AppDir/usr/share/applications/reliquary-archiver.desktop
 
       - name: copy files
         run: |
@@ -60,6 +55,7 @@ jobs:
         run: |
           ls -lah AppDir/ AppDir/usr/ AppDir/usr/bin/ AppDir/usr/lib/
           cat AppDir/AppRun
+          cat AppDir/reliquary-archiver.desktop
 
       - name: Download appimagetool
         run: |

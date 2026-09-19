@@ -53,8 +53,8 @@ jobs:
           LIBPCAP_PATH=$(ldconfig -p | grep "libpcap.so" | awk '{print $NF}' | head -n 1)
           cp "$LIBPCAP_PATH" AppDir/usr/lib/
           cp assets/icon256.png AppDir/usr/share/icons/hicolor/256x256/apps/reliquary-archiver.png
-          ln -s AppDir/usr/share/icons/hicolor/256x256/apps/reliquary-archiver.png AppDir/reliquary-archiver.png
-          ln -s AppDir/usr/share/applications/reliquary-archiver.desktop AppDir/reliquary-archiver.desktop
+          cp AppDir/usr/share/icons/hicolor/256x256/apps/reliquary-archiver.png AppDir/reliquary-archiver.png
+          cp AppDir/usr/share/applications/reliquary-archiver.desktop AppDir/reliquary-archiver.desktop
 
       - name: check files
         run: |

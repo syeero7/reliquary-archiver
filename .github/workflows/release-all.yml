@@ -90,21 +90,21 @@ jobs:
           cargo build --release --no-default-features --features pcap,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pcap-x64.exe
 
-      - name: run reliquary-pcap --help
-        if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pcap'
-        run: |
-          .\reliquary-archiver-pcap-x64.exe --help
-
       - name: Build pktmon Windows exe
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
         run: |
           cargo build --release --no-default-features --features pktmon,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pktmon-x64.exe
 
+      - name: run reliquary-pcap --help
+        if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pcap'
+        run: |
+          & ".\reliquary-archiver-pcap-x64.exe" --help
+
       - name: run reliquary-pktmon --help
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
         run: |
-          .\reliquary-archiver-pktmon-x64.exe --help
+          & ".\reliquary-archiver-pktmon-x64.exe" --help
 
       - name: Install dependencies
         if: matrix.platform == 'linux'
@@ -124,8 +124,8 @@ jobs:
           echo "test appimage"
           sudo apt purge -y libpcap-dev libwayland-dev
           sudo apt autoremove -y
-          chmod +x $APPIMAGE
-          $APPIMAGE_NAME --help
+          chmod +x "./$APPIMAGE_NAME" 
+          "./$APPIMAGE_NAME" --help
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7

@@ -47,4 +47,7 @@ cd ..
 curl -L -o appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
 chmod +x appimagetool.AppImage
 
-./appimagetool.AppImage AppDir "$APPIMAGE_NAME"
+if ! ./appimagetool.AppImage AppDir "$APPIMAGE_NAME"; then
+  ./appimagetool.AppImage --appimage-extract
+  ./squashfs-root/AppRun AppDir "$APPIMAGE_NAME"
+fi

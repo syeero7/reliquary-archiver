@@ -15,11 +15,7 @@ cat >AppDir/AppRun <<EOF
 #!/bin/sh
 set -e
 HERE="$(dirname -- "$(readlink -f -- "$0")")"
-
-# make appimagetool prefer the bundled mksquashfs
-export PATH="$this_dir"/usr/bin:"$PATH"
-APPIMAGE_LIB_DIRS="$HERE/usr/lib:$HERE/usr/lib/x86_64-linux-gnu"
-export LD_LIBRARY_PATH="$APPIMAGE_LIB_DIRS:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib"
+export PATH="$HERE"/usr/bin:"$HERE"/usr/lib:"$PATH"
 exec "$HERE/usr/bin/reliquary-archiver" "$@"
 EOF
 chmod +x AppDir/AppRun

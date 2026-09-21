@@ -98,11 +98,13 @@ jobs:
 
       - name: run reliquary-pcap --help
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pcap'
+        shell: cmd
         run: |
           & ".\reliquary-archiver-pcap-x64.exe" --help
 
       - name: run reliquary-pktmon --help
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
+        shell: cmd
         run: |
           & ".\reliquary-archiver-pktmon-x64.exe" --help
 

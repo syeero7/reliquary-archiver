@@ -90,8 +90,10 @@ jobs:
           cargo build --release --no-default-features --features pcap,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pcap-x64.exe
 
-          echo "test pcap exe"
-          & '.\reliquary-archiver-pcap-x64.exe' --help
+      - name: run reliquary-pcap --help
+        if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pcap'
+        run: |
+          .\reliquary-archiver-pcap-x64.exe --help
 
       - name: Build pktmon Windows exe
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
@@ -99,8 +101,10 @@ jobs:
           cargo build --release --no-default-features --features pktmon,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pktmon-x64.exe
 
-          echo "test pktmon exe"
-          & '.\reliquary-archiver-pktmon-x64.exe' --help
+      - name: run reliquary-pktmon --help
+        if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
+        run: |
+          .\reliquary-archiver-pktmon-x64.exe --help
 
       - name: Install dependencies
         if: matrix.platform == 'linux'
@@ -114,7 +118,7 @@ jobs:
           cargo build --release --no-default-features --features pcap,stream
           chmod +x pack_appimage.bash
 
-          APPIMAGE=./"${{ matrix.name }}.AppImage"
+          APPIMAGE="${{ matrix.name }}.AppImage"
           ./pack_appimage.bash $APPIMAGE
 
           echo "test appimage"

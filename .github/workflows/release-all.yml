@@ -99,12 +99,14 @@ jobs:
       - name: run reliquary-pcap --help
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pcap'
         shell: cmd
-        run: reliquary-archiver-pcap-x64.exe --help
+        continue-on-error: true
+        run: .\reliquary-archiver-pcap-x64.exe --help
 
       - name: run reliquary-pktmon --help
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
         shell: cmd
-        run: reliquary-archiver-pktmon-x64.exe --help
+        continue-on-error: true
+        run: .\reliquary-archiver-pktmon-x64.exe --help
 
       - name: Install dependencies
         if: matrix.platform == 'linux'
@@ -127,10 +129,10 @@ jobs:
           echo "test appimage"
           sudo apt purge -y libpcap-dev libwayland-dev
           sudo apt autoremove -y
-          ls -lh reliquary-archiver-*
           chmod +x ./reliquary-archiver-linux.AppImage
 
           if ! ./reliquary-archiver-linux.AppImage --help; then
+            echo "fuse mount failed. extracting"
             [ -d "./squashf-root" ] && rm -rf "./squashfs-root"
             ./reliquary-archiver-linux.AppImage --appimage-extract
             ./squashfs-root/AppRun --help

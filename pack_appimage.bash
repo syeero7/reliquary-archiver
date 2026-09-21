@@ -14,7 +14,10 @@ mkdir -p AppDir/usr/bin \
 cat >AppDir/AppRun <<EOF
 #!/bin/sh
 set -e
-HERE="$(dirname "$(readlink -f "$0")")"
+HERE="$(dirname -- "$(readlink -f -- "$0")")"
+
+# make appimagetool prefer the bundled mksquashfs
+export PATH="$this_dir"/usr/bin:"$PATH"
 APPIMAGE_LIB_DIRS="$HERE/usr/lib:$HERE/usr/lib/x86_64-linux-gnu"
 export LD_LIBRARY_PATH="$APPIMAGE_LIB_DIRS:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib"
 exec "$HERE/usr/bin/reliquary-archiver" "$@"
@@ -44,10 +47,16 @@ ln -s usr/share/icons/hicolor/256x256/apps/reliquary-archiver.png reliquary-arch
 ln -s usr/share/applications/reliquary-archiver.desktop reliquary-archiver.desktop
 cd ..
 
-curl -L -o appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+echo "--- List AppDir ---"
+ls -Rlah AppDir
+echo "--- END ---"
+
+curl -L -o appimagetool.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
 chmod +x appimagetool.AppImage
 
 if ! ./appimagetool.AppImage AppDir "$APPIMAGE_NAME"; then
+  echo "fuse mount failed. extracting"
+  [ -d "./squashf-root" ] && rm -rf "./squashfs-root"
   ./appimagetool.AppImage --appimage-extract
   ./squashfs-root/AppRun AppDir "$APPIMAGE_NAME"
 fi

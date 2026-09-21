@@ -15,7 +15,7 @@ cat >AppDir/AppRun <<'EOF'
 #!/bin/bash
 set -e
 HERE="$(dirname -- "$(readlink -f -- "$0")")"
-export PATH="$HERE"/usr/bin:"$HERE"/usr/lib:"$PATH"
+export LD_LIBRARY_PATH="$HERE"/usr/lib
 exec "$HERE"/usr/bin/reliquary-archiver "$@"
 EOF
 chmod +x AppDir/AppRun

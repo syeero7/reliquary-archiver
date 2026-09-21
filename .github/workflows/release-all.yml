@@ -109,7 +109,7 @@ jobs:
           chmod +x pack_appimage.bash
 
           APPIMAGE=./"${{ matrix.name }}.AppImage"
-          ./pack_appimage $APPIMAGE
+          ./pack_appimage.bash $APPIMAGE
 
           chmod +x $APPIMAGE
           $APPIMAGE_NAME --help

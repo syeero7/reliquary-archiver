@@ -11,12 +11,12 @@ mkdir -p AppDir/usr/bin \
   AppDir/usr/share/icons/hicolor/256x256/apps \
   AppDir/usr/share/applications
 
-cat >AppDir/AppRun <<EOF
-#!/bin/sh
+cat >AppDir/AppRun <<'EOF'
+#!/bin/bash
 set -e
 HERE="$(dirname -- "$(readlink -f -- "$0")")"
 export PATH="$HERE"/usr/bin:"$HERE"/usr/lib:"$PATH"
-exec "$HERE/usr/bin/reliquary-archiver" "$@"
+exec "$HERE"/usr/bin/reliquary-archiver "$@"
 EOF
 chmod +x AppDir/AppRun
 

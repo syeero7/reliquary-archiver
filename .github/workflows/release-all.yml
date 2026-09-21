@@ -117,15 +117,14 @@ jobs:
         run: |
           cargo build --release --no-default-features --features pcap,stream
           chmod +x pack_appimage.bash
-
-          APPIMAGE="${{ matrix.name }}.AppImage"
-          ./pack_appimage.bash $APPIMAGE
+          ./pack_appimage.bash "${{ matrix.name }}.AppImage"
 
           echo "test appimage"
           sudo apt purge -y libpcap-dev libwayland-dev
           sudo apt autoremove -y
-          chmod +x "./$APPIMAGE_NAME" 
-          "./$APPIMAGE_NAME" --help
+          ls -lh reliquary-archiver-*
+          chmod +x ./reliquary-archiver-linux.AppImage
+          ./reliquary-archiver-linux.AppImage --help
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7

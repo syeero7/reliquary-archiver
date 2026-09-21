@@ -13,6 +13,8 @@ on:
         required: false
         default: false
 
+permissions: {}
+
 jobs:
   pre-build:
     if: ${{ !inputs.skipPreBuild }}
@@ -87,14 +89,18 @@ jobs:
         run: |
           cargo build --release --no-default-features --features pcap,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pcap-x64.exe
-          ./reliquary-archiver-pcap-x64.exe --help
+
+          echo "test pcap exe"
+          & '.\reliquary-archiver-pcap-x64.exe' --help
 
       - name: Build pktmon Windows exe
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
         run: |
           cargo build --release --no-default-features --features pktmon,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pktmon-x64.exe
-          ./reliquary-archiver-pktmon-x64.exe --help
+
+          echo "test pktmon exe"
+          & '.\reliquary-archiver-pktmon-x64.exe' --help
 
       - name: Install dependencies
         if: matrix.platform == 'linux'
@@ -111,6 +117,9 @@ jobs:
           APPIMAGE=./"${{ matrix.name }}.AppImage"
           ./pack_appimage.bash $APPIMAGE
 
+          echo "test appimage"
+          sudo apt purge -y libpcap-dev libwayland-dev
+          sudo apt autoremove -y
           chmod +x $APPIMAGE
           $APPIMAGE_NAME --help
 

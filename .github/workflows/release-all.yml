@@ -119,12 +119,22 @@ jobs:
           chmod +x pack_appimage.bash
           ./pack_appimage.bash "${{ matrix.name }}.AppImage"
 
+
+          echo "---- fuse check ----"
+          dpkg -l | grep fuse3
+          apt list --installed | grep fuse
+
           echo "test appimage"
           sudo apt purge -y libpcap-dev libwayland-dev
           sudo apt autoremove -y
           ls -lh reliquary-archiver-*
           chmod +x ./reliquary-archiver-linux.AppImage
-          ./reliquary-archiver-linux.AppImage --help
+
+          if ! ./reliquary-archiver-linux.AppImage --help; then
+            [ -d "./squashf-root" ] && rm -rf "./squashfs-root"
+            ./reliquary-archiver-linux.AppImage --appimage-extract
+            ./squashfs-root/AppRun --help
+          fi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7

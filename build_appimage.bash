@@ -75,7 +75,7 @@ APPIMAGE_TOOL="appimagetool.AppImage"
 curl -L "$APPIMAGE_TOOL_URL" -o "$APPIMAGE_TOOL"
 chmod +x "$APPIMAGE_TOOL"
 
-if ! "$APPIMAGETOOL" "$APP_DIR" "$APPIMAGE_NAME"; then
+if ! ./"$APPIMAGETOOL" "$APP_DIR" "$APPIMAGE_NAME"; then
   [ -d "./squashf-root" ] && rm -rf "./squashfs-root"
 
   echo "fuse mount failed. extracting.."

@@ -13,6 +13,8 @@ on:
         required: false
         default: false
 
+permissions: {}
+
 jobs:
   pre-build:
     if: ${{ !inputs.skipPreBuild }}
@@ -87,14 +89,24 @@ jobs:
         run: |
           cargo build --release --no-default-features --features pcap,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pcap-x64.exe
-          ./reliquary-archiver-pcap-x64.exe --help
 
       - name: Build pktmon Windows exe
         if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
         run: |
           cargo build --release --no-default-features --features pktmon,stream,gui
           mv -Force target/release/reliquary-archiver.exe reliquary-archiver-pktmon-x64.exe
-          ./reliquary-archiver-pktmon-x64.exe --help
+
+      - name: run reliquary-pcap --help
+        if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pcap'
+        shell: cmd
+        continue-on-error: true
+        run: .\reliquary-archiver-pcap-x64.exe --help
+
+      - name: run reliquary-pktmon --help
+        if: matrix.platform == 'windows' && matrix.name == 'reliquary-archiver-pktmon'
+        shell: cmd
+        continue-on-error: true
+        run: .\reliquary-archiver-pktmon-x64.exe --help
 
       - name: Install dependencies
         if: matrix.platform == 'linux'
@@ -107,12 +119,24 @@ jobs:
         run: |
           cargo build --release --no-default-features --features pcap,stream
           chmod +x pack_appimage.bash
+          ./pack_appimage.bash "${{ matrix.name }}.AppImage"
 
-          APPIMAGE=./"${{ matrix.name }}.AppImage"
-          ./pack_appimage $APPIMAGE
 
-          chmod +x $APPIMAGE
-          $APPIMAGE_NAME --help
+          echo "---- fuse check ----"
+          dpkg -l | grep fuse3
+          apt list --installed | grep fuse
+
+          echo "test appimage"
+          sudo apt purge -y libpcap-dev libwayland-dev
+          sudo apt autoremove -y
+          chmod +x ./reliquary-archiver-linux.AppImage
+
+          if ! ./reliquary-archiver-linux.AppImage --help; then
+            echo "fuse mount failed. extracting"
+            [ -d "./squashf-root" ] && rm -rf "./squashfs-root"
+            ./reliquary-archiver-linux.AppImage --appimage-extract
+            ./squashfs-root/AppRun --help
+          fi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7

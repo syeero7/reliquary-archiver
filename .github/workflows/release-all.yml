@@ -63,17 +63,17 @@ jobs:
           - name: reliquary-archiver-pcap-x64.exe
             os: windows-latest
             platform: windows
-            features: "pcap,stream,gui"
+            features: pcap,stream,gui
 
           - name: reliquary-archiver-pktmon-x64.exe
             os: windows-latest
             platform: windows
-            features: "pktmon,stream,gui"
+            features: pktmon,stream,gui
 
           - name: reliquary-archiver-x64.AppImage
             os: ubuntu-latest
             platform: linux
-            features: "pcap,stream"
+            features: pcap,stream
 
     runs-on: ${{ matrix.os }}
     permissions:

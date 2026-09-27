@@ -25,15 +25,8 @@ envsubst "$APP_ID" <<'EOF' >"$APP_DIR/AppRun"
 set -e
 
 HERE="$(dirname -- "$(readlink -f -- "$0")")"
-APP_PATH="$HERE/usr/bin/$APP_ID"
-
-if [ -z "$1" ]; then
-  "$APP_PATH" --help
-  exit 1
-fi
-
 export LD_LIBRARY_PATH="$HERE"/usr/lib
-exec "$APP_ID" "$@"
+exec "$HERE/usr/bin/$APP_ID" "$@"
 EOF
 chmod +x "$APP_DIR/AppRun"
 cat "$APP_DIR/AppRun"

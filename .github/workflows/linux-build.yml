@@ -1,0 +1,39 @@
+name: Build Linux AppImage
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update 
+          sudo apt install -y libpcap-dev libwayland-dev
+
+      - run: cargo build --release --no-default-features --features pcap,stream
+
+      - name: Pack AppImage
+        run: |
+          chmod +x build_appimage.bash
+          ./build_appimage.bash reliquary-x64.AppImage 
+
+      - name: Print help
+        run: |
+          chmod +x reliquary-x64.AppImage
+          reliquary-x64.AppImage --help
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: reliquary-x64.AppImage
+          path: reliquary-x64.AppImage
+          if-no-files-found: error
